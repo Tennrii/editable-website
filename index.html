@@ -21,10 +21,10 @@
     <script>
         async function saveContent() {
             const content = document.getElementById('editable').innerHTML;
-            const token = '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'; // Replace with your GitHub token
+            const token = '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'; // Replace with your GitHub token
             const username = 'Tennrii';
             const repo = 'editable-website';
-            const path = 'https://tennrii.github.io/editable-website/content.html';
+            const path = 'content.html';
             const branch = 'main';
 
             const response = await fetch(`https://api.github.com/repos/${username}/${repo}/contents/${path}`, {
