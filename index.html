@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editable Content</title>
+    <style>
+        #editable {
+            border: 1px solid #ccc;
+            padding: 10px;
+            min-height: 100px;
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <div id="editable" contenteditable="true">
+        This is editable content. Click here to edit.
+    </div>
+    <button onclick="saveContent()">Save</button>
+    <script>
+        async function saveContent() {
+            const content = document.getElementById('editable').innerHTML;
+            const token = 'YOUR_GITHUB_TOKEN'; // Replace with your GitHub token
+            const username = 'YOUR_GITHUB_USERNAME';
+            const repo = 'editable-website';
+            const path = 'content.html';
+            const branch = 'main';
+
+            const response = await fetch(`https://api.github.com/repos/${username}/${repo}/contents/${path}`, {
+                headers: {
+                    'Authorization': `token ${token}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            });
+
+            const fileData = await response.json();
+            const sha = fileData.sha;
+
+            const updateResponse = await fetch(`https://api.github.com/repos/${username}/${repo}/contents/${path}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `token ${token}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                },
+                body: JSON.stringify({
+                    message: 'Update content',
+                    content: btoa(unescape(encodeURIComponent(content))),
+                    sha: sha,
+                    branch: branch
+                })
+            });
+
+            if (updateResponse.ok) {
+                alert('Content saved!');
+            } else {
+                alert('Failed to save content.');
+            }
+        }
+    </script>
+</body>
+</html>
